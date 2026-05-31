@@ -1,6 +1,3 @@
-"use client"
-
-import React from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { TextEffect } from "@/components/motion-primitives/text-effect"
@@ -10,7 +7,7 @@ import FeaturesSection from "@/components/features-section"
 import FooterSection from "@/components/footer"
 import CodeBlock from "@/components/code-block"
 import { WaitlistForm } from "@/components/waitlist-form"
-import { useWaitlist } from "@/hooks/use-waitlist"
+import { wk } from "@/lib/waitkit"
 
 const transitionVariants = {
   item: {
@@ -32,8 +29,16 @@ const transitionVariants = {
   },
 }
 
-export default function HeroSection() {
-  const { count } = useWaitlist()
+async function getCount() {
+  try {
+    return await wk.subscribers.count()
+  } catch {
+    return null
+  }
+}
+
+export default async function HeroSection() {
+  const count = await getCount()
 
   return (
     <>

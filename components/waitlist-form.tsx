@@ -1,25 +1,31 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
+import { useState, useTransition, type FormEvent } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Mail01Icon, CheckmarkCircle01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
-import { useWaitlist } from "@/hooks/use-waitlist"
+import { joinWaitlist } from "@/app/actions"
 
 export function WaitlistForm() {
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
-  const { join, isJoining, error } = useWaitlist()
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!email) return
 
-    const result = await join({ email })
-    if (result) {
-      setSubscribed(true)
-      setEmail("")
-    }
+    setError(null)
+    startTransition(async () => {
+      const result = await joinWaitlist(email)
+      if (result.success) {
+        setSubscribed(true)
+        setEmail("")
+      } else {
+        setError(result.error)
+      }
+    })
   }
 
   if (subscribed) {
@@ -53,7 +59,7 @@ export function WaitlistForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          disabled={isJoining}
+          disabled={isPending}
         />
 
         <div className="md:pr-1.5 lg:pr-0">
@@ -61,16 +67,14 @@ export function WaitlistForm() {
             aria-label="submit"
             size="sm"
             className="rounded-(--radius)"
-            disabled={isJoining || !email}
+            disabled={isPending || !email}
           >
-            {isJoining ? "Joining..." : "Join now"}
+            {isPending ? "Joining..." : "Join now"}
           </Button>
         </div>
       </div>
       {error && (
-        <p className="mt-2 text-center text-sm text-destructive">
-          {error.message}
-        </p>
+        <p className="mt-2 text-center text-sm text-destructive">{error}</p>
       )}
     </form>
   )
