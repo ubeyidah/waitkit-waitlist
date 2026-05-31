@@ -2,14 +2,15 @@
 
 import React from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
-import { Button } from "@/components/ui/button"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { TextEffect } from "@/components/motion-primitives/text-effect"
 import { AnimatedGroup } from "@/components/motion-primitives/animated-group"
 import { HeroHeader } from "@/components/header"
 import FeaturesSection from "@/components/features-section"
 import FooterSection from "@/components/footer"
 import CodeBlock from "@/components/code-block"
+import { WaitlistForm } from "@/components/waitlist-form"
+import { useWaitlist } from "@/hooks/use-waitlist"
 
 const transitionVariants = {
   item: {
@@ -32,6 +33,8 @@ const transitionVariants = {
 }
 
 export default function HeroSection() {
+  const { count } = useWaitlist()
+
   return (
     <>
       <HeroHeader />
@@ -89,31 +92,7 @@ export default function HeroSection() {
                 }}
                 className="mt-12"
               >
-                <form action="" className="mx-auto max-w-sm">
-                  <div className="relative grid grid-cols-[1fr_auto] items-center rounded-[calc(var(--radius)+0.5rem)] border bg-background pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2 has-[input:focus]:ring-muted">
-                    <HugeiconsIcon
-                      icon={Mail01Icon}
-                      className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4"
-                    />
-
-                    <input
-                      id="hero-email"
-                      placeholder="Your mail address"
-                      className="h-12 w-full bg-transparent pl-12 focus:outline-none"
-                      type="email"
-                    />
-
-                    <div className="md:pr-1.5 lg:pr-0">
-                      <Button
-                        aria-label="submit"
-                        size="sm"
-                        className="rounded-(--radius)"
-                      >
-                        Join now
-                      </Button>
-                    </div>
-                  </div>
-                </form>
+                <WaitlistForm />
 
                 <div className="mt-6 flex items-center justify-center gap-3">
                   <div className="flex -space-x-2">
@@ -139,7 +118,7 @@ export default function HeroSection() {
                   </div>
                   <p className="text-sm text-muted-foreground">
                     <span className="font-semibold text-foreground">
-                      2,847+
+                      {count ? `${count.toLocaleString()}+` : "2,847+"}
                     </span>{" "}
                     developers already joined
                   </p>
