@@ -100,7 +100,7 @@ export default async function HeroSection() {
                 <WaitlistForm />
 
                 <div className="mt-6 flex items-center justify-center gap-3">
-                  <div className="flex -space-x-2">
+                  <div className="flex hidden -space-x-2">
                     {[
                       "https://avatars.githubusercontent.com/u/47919550?v=4",
                       "https://avatars.githubusercontent.com/u/31113941?v=4",
@@ -123,7 +123,7 @@ export default async function HeroSection() {
                   </div>
                   <p className="text-sm text-muted-foreground">
                     <span className="font-semibold text-foreground">
-                      {count ? `${count.toLocaleString()}+` : "2,847+"}
+                      {count?.toLocaleString() || 0}+
                     </span>{" "}
                     developers already joined
                   </p>
