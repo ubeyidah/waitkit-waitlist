@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Inter, Noto_Serif, Outfit } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { Analytics } from "@vercel/analytics/next"
 
 const notoSerifHeading = Noto_Serif({
   subsets: ["latin"],
@@ -100,6 +101,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )
