@@ -1,31 +1,48 @@
 "use client"
 
-import { useState, useTransition, type FormEvent } from "react"
+import { useState, type FormEvent } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Mail01Icon, CheckmarkCircle01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
-import { joinWaitlist } from "@/app/actions"
 
 export function WaitlistForm() {
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [isPending, setIsPending] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!email) return
 
     setError(null)
-    startTransition(async () => {
-      const result = await joinWaitlist(email)
-      if (result.success) {
-        setSubscribed(true)
-        setEmail("")
-      } else {
-        setError(result.error)
+    setIsPending(true)
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_WAITKIT_BASE_URL}/api/waitlist/${process.env.NEXT_PUBLIC_WAITKIT_PROJECT_SLUG}/join`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_WAITKIT_API_KEY}`,
+          },
+          body: JSON.stringify({ email }),
+        }
+      )
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body.message || "Something went wrong")
       }
-    })
+
+      setSubscribed(true)
+      setEmail("")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    } finally {
+      setIsPending(false)
+    }
   }
 
   if (subscribed) {
