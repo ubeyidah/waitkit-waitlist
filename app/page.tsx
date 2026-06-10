@@ -6,8 +6,7 @@ import { HeroHeader } from "@/components/header"
 import FeaturesSection from "@/components/features-section"
 import FooterSection from "@/components/footer"
 import CodeBlock from "@/components/code-block"
-import { WaitlistForm } from "@/components/waitlist-form"
-import { wk } from "@/lib/waitkit"
+import { HeroWaitlist } from "@/components/hero-waitlist"
 
 const transitionVariants = {
   item: {
@@ -29,17 +28,7 @@ const transitionVariants = {
   },
 }
 
-async function getCount() {
-  try {
-    return await wk.subscribers.count()
-  } catch {
-    return null
-  }
-}
-
 export default async function HeroSection() {
-  const count = await getCount()
-
   return (
     <>
       <HeroHeader />
@@ -97,37 +86,7 @@ export default async function HeroSection() {
                 }}
                 className="mt-12"
               >
-                <WaitlistForm />
-
-                <div className="mt-6 flex items-center justify-center gap-3">
-                  <div className="flex hidden -space-x-2">
-                    {[
-                      "https://avatars.githubusercontent.com/u/47919550?v=4",
-                      "https://avatars.githubusercontent.com/u/31113941?v=4",
-                      "https://avatars.githubusercontent.com/u/68236786?v=4",
-                      "https://avatars.githubusercontent.com/u/99137927?v=4",
-                    ].map((src, i) => (
-                      <div
-                        key={i}
-                        className="size-8 rounded-full border-2 border-background bg-background"
-                      >
-                        <img
-                          className="aspect-square rounded-full object-cover"
-                          src={src}
-                          alt=""
-                          height="64"
-                          width="64"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-semibold text-foreground">
-                      {count?.toLocaleString() || 0}+
-                    </span>{" "}
-                    developers already joined
-                  </p>
-                </div>
+                <HeroWaitlist />
 
                 <div
                   aria-hidden
